@@ -1,0 +1,40 @@
+{
+  "name": "@jl-org/js-to-style",
+  "version": "0.0.1",
+  "description": "Converts JavaScript code to CSS or SCSS code",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "type": "commonjs",
+  "types": "dist/typings/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "exports": {
+    "require": {
+      "types": "./dist/typings/index.d.ts",
+      "default": "./dist/index.cjs"
+    },
+    "import": {
+      "types": "./dist/typings/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.config.js && tsc -p tsconfig.json",
+    "test": "node ./examples/jsToStyle.cjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "esbuild": "^0.24.2",
+    "typescript": "^5.7.3"
+  },
+  "keywords": [
+    "js-to-style"
+  ],
+  "author": "CJL <2662442385@qq.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/beixiyo/js-to-style"
+}
