@@ -1,4 +1,4 @@
 export const primaryColor = '#409eff'
-export const successColor = '#67c23a'
-export const warningColor = '#e6a23c'
-export const dangerColor = '#f56c6c'
+export let successColor = '#67c23a';
+export var warningColor = '#e6a23c'
+export const padding = 16;

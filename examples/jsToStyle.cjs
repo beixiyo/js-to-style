@@ -7,4 +7,5 @@ writeStyle({
   jsPath: resolve(__dirname, './variable.js'),
   cssPath: resolve(__dirname, './output.css'),
   scssPath: resolve(__dirname, './output.scss'),
+  lessPath: resolve(__dirname, './output.less'),
 })

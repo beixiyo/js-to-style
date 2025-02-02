@@ -6,9 +6,13 @@ export interface Options {
   /**
    * 输出 css 文件路径
    */
-  cssPath: string
+  cssPath?: string
   /**
    * 输出 scss 文件路径
    */
-  scssPath: string
+  scssPath?: string
+  /**
+   * 输出 less 文件路径
+   */
+  lessPath?: string
 }
