@@ -1,4 +1,4 @@
-# 一键将 JS 代码转换为 CSS、SCSS 代码
+# 一键将 JS 代码转换为 CSS、SCSS、LESS 代码
 
 
 ## 安装
@@ -9,10 +9,6 @@ npm i @jl-org/js-to-style -D
 
 
 ## 快速上手
-
-```bash
-touch scripts/jsToStyle.cjs
-```
 
 `scripts/jsToStyle.cjs`
 ```js
@@ -25,14 +21,15 @@ writeStyle({
   jsPath: resolve(__dirname, './variable.js'),
   cssPath: resolve(__dirname, './output.css'),
   scssPath: resolve(__dirname, './output.scss'),
+  lessPath: resolve(__dirname, './output.less'),
 })
 ```
 
 
-`variable.js`
+`scripts/variable.js`
 ```js
 export const primaryColor = '#409eff'
-export const successColor = '#67c23a'
-export const warningColor = '#e6a23c'
-export const dangerColor = '#f56c6c'
+export let successColor = '#67c23a';
+export var warningColor = '#e6a23c'
+export const padding = 16;
 ```
