@@ -1,24 +1,38 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "moduleResolution": "bundler",
-    "baseUrl": ".",
-    "outDir": "./dist",
-    "lib": ["ESNext", "DOM"],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-    },
+    /* 🎯 基础编译配置 */
+    "target": "ES2020",
     "module": "ESNext",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationDir": "./dist/typings",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
     "skipLibCheck": true,
-    "strict": false,
-    "esModuleInterop": true
+    "forceConsistentCasingInFileNames": true,
+
+    /* 🛡️ 严格类型检查配置 */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": false,
+
+    /* 🚀 现代构建工具优化配置 */
+    "allowJs": true,
+    "checkJs": false,
+    "incremental": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src"]
 }

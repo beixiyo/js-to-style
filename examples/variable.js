@@ -1,4 +1,10 @@
-export const primaryColor = '#409eff'
-export let successColor = '#67c23a';
-export var warningColor = '#e6a23c'
-export const padding = 16;
+export const theme = {
+  light: {
+    primaryColor: '#409eff',
+    secondaryColor: '#67c23a',
+  },
+  dark: {
+    primaryColor: '#66b1ff',
+    secondaryColor: '#85ce61',
+  }
+}

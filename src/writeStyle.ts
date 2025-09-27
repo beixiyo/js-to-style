@@ -1,27 +1,29 @@
-import { writeFile } from 'node:fs/promises'
-import { parseVar } from './parseVar'
-import type { Options } from './types'
+import { parseFile } from './parser'
+import { generateCSS, generateSCSS, generateLESS } from './generator'
+import type { ParseOptions } from './types'
+import { forceWriteFile } from './tools'
 
 /**
  * 写入样式文件
  */
-export function writeStyle(
-  opts: Options
-) {
-  const { cssData, scssData, lessData } = parseVar(opts.jsPath)
+export function writeStyle(opts: ParseOptions) {
+  const themeConfig = parseFile(opts.jsPath)
 
-  const cssVariable = Object.entries(cssData).map(([k, v]) => `${k}: ${v}`).join(';\n  ') + ';'
-  const cssText = `:root {
-  ${cssVariable}
-}`
+  // 生成 CSS
+  if (opts.cssPath) {
+    const cssContent = generateCSS(themeConfig, opts)
+    forceWriteFile(opts.cssPath, cssContent)
+  }
 
-  const scssText = Object.entries(scssData).map(([k, v]) => `${k}: ${v}`).join(';\n') + ';'
-  const lessText = Object.entries(lessData).map(([k, v]) => `${k}: ${v}`).join(';\n') + ';'
+  // 生成 SCSS
+  if (opts.scssPath) {
+    const scssContent = generateSCSS(themeConfig, opts)
+    forceWriteFile(opts.scssPath, scssContent)
+  }
 
-  const promArr = []
-  opts.cssPath && promArr.push(writeFile(opts.cssPath, cssText))
-  opts.scssPath && promArr.push(writeFile(opts.scssPath, scssText))
-  opts.lessPath && promArr.push(writeFile(opts.lessPath, lessText))
-
-  return Promise.all(promArr)
+  // 生成 LESS
+  if (opts.lessPath) {
+    const lessContent = generateLESS(themeConfig, opts)
+    forceWriteFile(opts.lessPath, lessContent)
+  }
 }
