@@ -9,8 +9,8 @@ export function generateCSS(
 ): string {
   const {
     cssPrefix = '--',
-    darkClassName = '.dark',
-    lightClassName = ':root',
+    darkClassName = ':root.dark,\nhtml.dark',
+    lightClassName = ':root,\n:root.light,\nhtml,\nhtml.light',
     generateLight = true,
     generateDark = true,
     variableNameTransform = (name: string) => name

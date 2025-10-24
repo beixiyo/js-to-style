@@ -1,6 +1,6 @@
 {
   "name": "@jl-org/js-to-style",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "自动解析 TypeScript 主题对象文件并生成 CSS/SCSS/LESS 样式文件的工具包",
   "private": false,
   "type": "module",

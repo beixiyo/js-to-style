@@ -70,16 +70,6 @@ export interface ParseOptions {
  */
 export interface AutoParseStylesPluginOptions extends ParseOptions {
   /**
-   * 是否在开发模式下启用
-   * @default true
-   */
-  dev?: boolean
-  /**
-   * 是否在构建模式下启用
-   * @default true
-   */
-  build?: boolean
-  /**
    * 是否监听文件变化
    * @default true
    */

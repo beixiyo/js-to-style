@@ -15,13 +15,16 @@ export function parseThemeObject(path: string): ThemeConfig {
     plugins: ['typescript', 'decorators-legacy']
   })
 
+  // 先收集所有变量声明
+  const variables = collectVariables(ast)
+
   let themeConfig: ThemeConfig | null = null
 
   traverse(ast, {
     ExportDefaultDeclaration(path: any) {
       const { declaration } = path.node
       if (t.isObjectExpression(declaration)) {
-        themeConfig = parseObjectExpression(declaration)
+        themeConfig = parseObjectExpression(declaration, variables)
       }
     },
     ExportNamedDeclaration(path: any) {
@@ -30,7 +33,7 @@ export function parseThemeObject(path: string): ThemeConfig {
         const declarator = declaration.declarations[0]
         if (t.isIdentifier(declarator.id) && declarator.id.name === 'theme') {
           if (t.isObjectExpression(declarator.init)) {
-            themeConfig = parseObjectExpression(declarator.init)
+            themeConfig = parseObjectExpression(declarator.init, variables)
           }
         }
       }
@@ -45,9 +48,31 @@ export function parseThemeObject(path: string): ThemeConfig {
 }
 
 /**
+ * 收集文件中的所有变量声明
+ */
+function collectVariables(ast: t.File): Record<string, string | number> {
+  const variables: Record<string, string | number> = {}
+
+  traverse(ast, {
+    VariableDeclarator(path: any) {
+      const { id, init } = path.node
+
+      if (t.isIdentifier(id) && init) {
+        const value = resolveValue(init, variables)
+        if (value !== undefined) {
+          variables[id.name] = value
+        }
+      }
+    }
+  })
+
+  return variables
+}
+
+/**
  * 解析对象表达式
  */
-function parseObjectExpression(obj: t.ObjectExpression): ThemeConfig {
+function parseObjectExpression(obj: t.ObjectExpression, variables: Record<string, string | number>): ThemeConfig {
   const modes: { light: Record<string, string | number>; dark: Record<string, string | number> } = {
     light: {},
     dark: {}
@@ -70,7 +95,7 @@ function parseObjectExpression(obj: t.ObjectExpression): ThemeConfig {
 
       if (key === 'light' || key === 'dark') {
         if (t.isObjectExpression(property.value)) {
-          modes[key] = parseModeObject(property.value)
+          modes[key] = parseModeObject(property.value, variables)
         }
       }
     }
@@ -82,13 +107,12 @@ function parseObjectExpression(obj: t.ObjectExpression): ThemeConfig {
 /**
  * 解析模式对象（light 或 dark）
  */
-function parseModeObject(obj: t.ObjectExpression): Record<string, string | number> {
+function parseModeObject(obj: t.ObjectExpression, variables: Record<string, string | number>): Record<string, string | number> {
   const result: Record<string, string | number> = {}
 
   for (const property of obj.properties) {
     if (t.isObjectProperty(property)) {
       let key: string
-      let value: string | number
 
       // 获取键名
       if (t.isIdentifier(property.key)) {
@@ -102,24 +126,36 @@ function parseModeObject(obj: t.ObjectExpression): Record<string, string | numbe
       }
 
       // 获取值
-      if (t.isStringLiteral(property.value)) {
-        value = property.value.value
+      if (t.isExpression(property.value)) {
+        const value = resolveValue(property.value, variables)
+        if (value !== undefined) {
+          result[key] = value
+        }
       }
-      else if (t.isNumericLiteral(property.value)) {
-        value = property.value.value
-      }
-      else if (t.isBooleanLiteral(property.value)) {
-        value = property.value.value ? 1 : 0
-      }
-      else {
-        continue
-      }
-
-      result[key] = value
     }
   }
 
   return result
+}
+
+/**
+ * 解析值，支持字面量和变量引用
+ */
+function resolveValue(node: t.Expression, variables: Record<string, string | number>): string | number | undefined {
+  if (t.isStringLiteral(node)) {
+    return node.value
+  }
+  else if (t.isNumericLiteral(node)) {
+    return node.value
+  }
+  else if (t.isBooleanLiteral(node)) {
+    return node.value ? 1 : 0
+  }
+  else if (t.isIdentifier(node)) {
+    return variables[node.name]
+  }
+
+  return undefined
 }
 
 /**

@@ -7,8 +7,6 @@ import type { AutoParseStylesPluginOptions } from './types'
  */
 export function autoParseStyles(options: AutoParseStylesPluginOptions): Plugin {
   const {
-    dev = true,
-    build = true,
     watch = true,
   } = options
 
@@ -35,14 +33,25 @@ export function autoParseStyles(options: AutoParseStylesPluginOptions): Plugin {
     },
     buildStart() {
       // 在构建开始时运行
-      if (build) {
-        runWriteStyle()
-      }
+      runWriteStyle()
     },
-    handleHotUpdate({ file }) {
-      // 监听变量文件变化
-      if (file === options.jsPath && dev && watch) {
-        runWriteStyle()
+    configureServer(server) {
+      if (watch) {
+        try {
+          server.watcher.add(options.jsPath)
+          console.log(`👀 Watching file: ${options.jsPath}`)
+
+          // 监听文件变化事件
+          server.watcher.on('change', (filePath) => {
+            if (filePath === options.jsPath) {
+              console.log(`📝 File changed: ${options.jsPath}`)
+              runWriteStyle()
+            }
+          })
+        }
+        catch (error) {
+          console.warn(`⚠️ Failed to watch file ${options.jsPath}:`, error)
+        }
       }
     }
   }
